@@ -28,11 +28,10 @@ object Daemon {
 
   private def job(): Unit = {
     val data = DataAccess.load()
-    refreshTray(data.worked.getSeconds / data.toWork.getSeconds.toDouble)
     val today = LocalDate.now()
     if (today != data.day) {
       val startTime = LocalTime.now().withNano(0).withSecond(0)
-      showWorkStartedNotification(startTime, data.toWork)
+      showWorkStartedNotification(startTime, data.toWork.minus(data.worked))
       DataAccess.store(Data(today, startTime, Duration.ZERO, data.toWork.minus(data.worked).plus(Config.Workday)))
     } else {
       val workTime = Duration.between(data.day.atTime(data.started), LocalDateTime.now())
@@ -54,12 +53,16 @@ object Daemon {
     }
 
     firstRun = false
+
+    val data2 = DataAccess.load()
+    refreshTray(data2.worked.getSeconds / data2.toWork.getSeconds.toDouble)
   }
 
 
 
   def showProgress(data: Data): Unit = {
     val line1 = s"Pracujesz już ${printDuration(data.worked)} (od ${data.started})."
+    val now = LocalTime.now().withSecond(0).withNano(0)
     val (line2, color) = if (data.worked.isEqual(data.toWork, Config.Tolerance)) {
        s"Masz czyste konto, możesz iść do domu." -> Notifications.SUCCESS
     } else if (data.worked.isLonger(data.toWork)) {
@@ -68,15 +71,13 @@ object Daemon {
       if (data.toWork.isEqual(Config.Workday, Config.Tolerance)) {
         val toWork = if (Config.Workday.isLonger(data.toWork)) Config.Workday else data.toWork
         val remainng = toWork.minus(data.worked)
-        s"Jeszcze tylko $remainng. Możesz iść o ${LocalDateTime.now().plus(remainng)}." -> Notifications.INFORMATION
+        s"Jeszcze tylko ${printDuration(remainng)}. Możesz wyjść o ${now.plus(remainng)}." -> Notifications.INFORMATION
       } else if (data.toWork.isShorter(Config.Workday)) {
-        val now = LocalTime.now().withSecond(0).withNano(0)
         val toClear = data.toWork.minus(data.worked)
         val toWorkday = Config.Workday.minus(data.worked)
         s"Za ${printDuration(toClear)} (${now.plus(toClear)}) czyste konto, " +
           s"za ${printDuration(toWorkday)} (${now.plus(toWorkday)}) dnióweczka." -> Notifications.INFORMATION
       } else {
-        val now = LocalTime.now().withSecond(0).withNano(0)
         val toClear = data.toWork.minus(data.worked)
         val toWorkday = Config.Workday.minus(data.worked)
         //s"${now.plus(toWorkday)} - Za ${printDuration(toWorkday)} dnióweczka" +
@@ -115,16 +116,16 @@ object Daemon {
     doShowNotification("Do domu!", line1 + "\n" + line2, color)
   }
 
-  private def showWorkStartedNotification(startTime: LocalTime, additionalWork: Duration): Unit = {
-    val line1 = s"Pracujesz od: $startTime, kończysz o ${startTime.plus(Config.Workday)}"
-    val (line2, color) = if (!additionalWork.isEqual(Duration.ZERO, Config.Tolerance)) {
-      val tHome = startTime.plus(Config.Workday).minus(additionalWork)
-      if (additionalWork.isNegative) {
-        val overtime = printDuration(additionalWork.abs())
-        s"Masz nadgodziny: $overtime! Możesz wyjść już o $tHome." -> Notifications.SUCCESS
+  private def showWorkStartedNotification(startTime: LocalTime, overtime: Duration): Unit = {
+    val line1 = s"Pracujesz od: $startTime, kończysz o ${startTime.plus(Config.Workday)}."
+    val (line2, color) = if (!overtime.isEqual(Duration.ZERO, Config.Tolerance)) {
+      val tHome = startTime.plus(Config.Workday).plus(overtime)
+      if (overtime.isNegative) {
+        val good = printDuration(overtime.abs())
+        s"Jesteś: $good do przodu! Możesz wyjść już o $tHome." -> Notifications.SUCCESS
       } else {
-        val loss = printDuration(additionalWork.abs())
-        s"Masz zaległości $loss. Zostań do $tHome, żeby je odrobić." -> Notifications.WARNING
+        val loss = printDuration(overtime.abs())
+        s"Jesteś $loss w dupę. Może zostań do $tHome." -> Notifications.WARNING
       }
     } else {
       "Masz czyste konto" -> Notifications.INFORMATION
