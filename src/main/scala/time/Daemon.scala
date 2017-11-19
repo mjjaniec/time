@@ -128,7 +128,7 @@ object Daemon {
         s"Jesteś $loss w dupę. Może zostań do $tHome." -> Notifications.WARNING
       }
     } else {
-      "Masz czyste konto" -> Notifications.INFORMATION
+      "Masz czyste konto." -> Notifications.INFORMATION
     }
 
     doShowNotification("Praca na dziś", line1 + "\n" + line2, color)

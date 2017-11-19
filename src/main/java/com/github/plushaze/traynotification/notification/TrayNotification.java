@@ -11,6 +11,8 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.StageStyle;
@@ -30,6 +32,8 @@ public final class TrayNotification {
 	private Rectangle rectangleColor;
 	@FXML
 	private AnchorPane rootNode;
+	@FXML
+	private VBox customContent;
 
 	private CustomStage stage;
 	private Notification notification;
@@ -275,4 +279,7 @@ public final class TrayNotification {
 		return animation;
 	}
 
+	public void setCustomContent(Pane customContent) {
+		this.customContent.getChildren().setAll(customContent);
+	}
 }

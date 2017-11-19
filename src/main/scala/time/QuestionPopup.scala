@@ -3,13 +3,17 @@ package time
 import javafx.geometry.{Insets, Pos}
 import javafx.scene.Scene
 import javafx.scene.control.Button
-import javafx.scene.layout.{HBox, VBox}
+import javafx.scene.layout._
+import javafx.scene.paint.Color
 import javafx.scene.text.Text
 import javafx.stage.Stage
 
+import com.github.plushaze.traynotification.animations.Animations
+import com.github.plushaze.traynotification.notification.{Notifications, TrayNotification}
+
 class QuestionPopup(onYes: () => Unit) {
 
-  private val dialog = new Stage()
+  private val notification = new TrayNotification("Czy jesteś w pracy", "", Notifications.INFORMATION)
 
   {
     val nope = new Button("Nie")
@@ -18,22 +22,17 @@ class QuestionPopup(onYes: () => Unit) {
     val yess = new Button("Tak")
     yess.setOnAction(_ => {
       onYes()
-      dialog.hide()
+      notification.dismiss()
     })
-    val layout = new VBox(12)
-    layout.setPrefWidth(200)
-    layout.setPadding(new Insets(12))
-    layout.getChildren.add(new Text("Czy jesteś w pracy?"))
+
     val buttons = new HBox(12)
     buttons.getChildren.add(yess)
     buttons.getChildren.add(nope)
-    layout.getChildren.add(buttons)
-    buttons.setAlignment(Pos.BOTTOM_RIGHT)
-    dialog.setScene(new Scene(layout))
-    dialog.setResizable(false)
-    dialog.setAlwaysOnTop(true)
+
+    notification.setCustomContent(buttons)
+    notification.setAnimation(Animations.POPUP)
   }
 
 
-  def show(): Unit = dialog.show()
+  def show(): Unit = notification.showAndWait()
 }

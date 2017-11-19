@@ -24,6 +24,7 @@
                 <Font size="13.0"/>
             </font>
         </Label>
+        <VBox fx:id="customContent" layoutX="126.0" layoutY="36.0"/>
         <Label fx:id="lblClose" layoutX="441.0" text="x">
             <font>
                 <Font size="20.0"/>

@@ -6,7 +6,8 @@ public enum Notifications implements Notification {
 	NOTICE("images/notice.png", "#8D9695"),
 	SUCCESS("images/success.png", "#009961"),
 	WARNING("images/warning.png", "#E23E0A"),
-	ERROR("images/error.png", "#CC0033");
+	ERROR("images/error.png", "#CC0033"),
+	QUESTION("images/arraow.png", "#606060");
 
 	private final String urlResource;
 	private final String paintHex;
