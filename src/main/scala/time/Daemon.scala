@@ -27,7 +27,7 @@ object Daemon {
   }
 
   private def job(): Unit = {
-    val data = DataAccess.load()
+    var data = DataAccess.load()
     val today = LocalDate.now()
     if (today != data.day) {
       val startTime = LocalTime.now().withNano(0).withSecond(0)
@@ -36,6 +36,7 @@ object Daemon {
     } else {
       val workTime = Duration.between(data.day.atTime(data.started), LocalDateTime.now())
       DataAccess.store(data.copy(worked = workTime))
+      data = DataAccess.load()
 
       if (workTime.isLonger(Config.Workday) && !workdayShowed) {
         val additionalWork = data.worked.minus(data.toWork)
