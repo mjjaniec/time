@@ -105,7 +105,7 @@ object Daemon {
     val line1 = s"Twój trud skończony."
     val (line2, color) = if (!additionalWork.isEqual(Duration.ZERO, Config.Tolerance)) {
       if (additionalWork.isNegative) {
-        s"Ale pamiętaj że jesteś: ${printDuration(additionalWork)} w dupę." -> Notifications.WARNING
+        s"Ale pamiętaj że jesteś: ${printDuration(additionalWork.abs())} w dupę." -> Notifications.WARNING
       } else {
         s"I jeszcze jesteś: ${printDuration(additionalWork.abs())} do przodu!" -> Notifications.SUCCESS
       }
