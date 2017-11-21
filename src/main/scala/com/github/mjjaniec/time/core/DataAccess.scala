@@ -1,4 +1,4 @@
-package time
+package com.github.mjjaniec.time.core
 
 import java.io._
 import java.time.{Duration, LocalDate, LocalTime}
@@ -10,7 +10,7 @@ import scala.util.control.NonFatal
 case class Data(day: LocalDate, started: LocalTime, worked: Duration, toWork: Duration)
 
 object DataAccess {
-  private val filename = "time.db"
+  private val filename = "com.github.mjjaniec.time.db"
 
   def store(data: Data): Unit = {
 

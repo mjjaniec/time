@@ -1,4 +1,4 @@
-package time
+package com.github.mjjaniec.time.core
 
 import javafx.geometry.Insets
 import javafx.scene.control.Button

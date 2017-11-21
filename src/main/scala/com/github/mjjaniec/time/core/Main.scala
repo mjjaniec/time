@@ -1,4 +1,4 @@
-package time
+package com.github.mjjaniec.time.core
 
 import javafx.application.{Application, Platform}
 
