@@ -1,0 +1,10 @@
+.idea/
+/core/.idea/
+/time/.idea/
+
+/target/
+/core/target/
+/time/target/
+
+*.v
+*.jar
