@@ -4,3 +4,5 @@ target/
 *.v
 *.jar
 
+/.idea/modules/
+/.idea/libraries/
