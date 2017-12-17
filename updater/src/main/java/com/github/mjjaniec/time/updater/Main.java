@@ -11,11 +11,18 @@ import java.net.URLClassLoader;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.util.Optional;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 public class Main {
     private static final String CoreJar = "core.jar";
 
-    public static void main(String... args) {
+    private static Logger logger = Logger.getLogger(Main.class.getName());
+
+    public static void main(String... args) throws IOException {
+        setupLogging();
 
         LocalVersionFacade local = new LocalVersionFacade();
         GithubApiFacade github = new GithubApiFacade();
@@ -31,6 +38,16 @@ public class Main {
         startApplication(updated);
     }
 
+    private static void setupLogging() throws IOException {
+        FileHandler fh = new FileHandler("updater.log");
+        SimpleFormatter formatter = new SimpleFormatter();
+        fh.setFormatter(formatter);
+        Logger.getLogger("").addHandler(fh);
+
+        // the following statement is used to log any messages
+        Logger.getLogger(Main.class.getName()).log(Level.SEVERE, "Makota");
+    }
+
     private static Optional<Release> update(Release release, LocalVersionFacade local) {
         try {
             URL url = new URL(release.getAssets().get(0).getBrowser_download_url());
@@ -40,8 +57,8 @@ public class Main {
 
             local.saveCurrentRelease(release.version());
             return Optional.of(release);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Update failed", e);
             return Optional.empty();
         }
     }
@@ -70,7 +87,7 @@ public class Main {
             main.getMethod("main", String[].class).invoke(null, (Object) arguments);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Start failed", e);
         }
     }
 }

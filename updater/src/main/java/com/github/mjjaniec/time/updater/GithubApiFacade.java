@@ -9,8 +9,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class GithubApiFacade {
+    private static final Logger LOGGER = Logger.getLogger(GithubApiFacade.class.getName());
 
     private GithubApi api = new Retrofit.Builder()
             .baseUrl("https://api.github.com/")
@@ -24,7 +27,7 @@ public class GithubApiFacade {
             Response<Release> response = call.execute();
             return Optional.ofNullable(response.body());
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Cannot fetch release version", e);
             return Optional.empty();
         }
     }
