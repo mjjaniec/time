@@ -1,10 +1,5 @@
 .idea/
-/core/.idea/
-/time/.idea/
-
-/target/
-/core/target/
-/time/target/
+target/
 
 *.v
 *.jar
