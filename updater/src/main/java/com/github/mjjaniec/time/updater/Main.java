@@ -23,15 +23,15 @@ public class Main {
         Optional<Version> currentRelease = local.currentRelease();
         Optional<Release> latestRelease = github.latest();
 
-        latestRelease.
+        Optional<Release> updated = latestRelease.
                 filter(latest -> latest.version().isNewer(currentRelease.orElse(Version.Null)))
-                .ifPresent(latest -> update(latest, local));
+                .flatMap(latest -> update(latest, local));
 
 
-        startApplication();
+        startApplication(updated);
     }
 
-    private static void update(Release release, LocalVersionFacade local) {
+    private static Optional<Release> update(Release release, LocalVersionFacade local) {
         try {
             URL url = new URL(release.getAssets().get(0).getBrowser_download_url());
             ReadableByteChannel rbc = Channels.newChannel(url.openStream());
@@ -39,12 +39,14 @@ public class Main {
             fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
 
             local.saveCurrentRelease(release.version());
+            return Optional.of(release);
         } catch (IOException e) {
             e.printStackTrace();
+            return Optional.empty();
         }
     }
 
-    private static void startApplication() {
+    private static void startApplication(Optional<Release> updated) {
         try {
             File myJar = new File(CoreJar);
 
@@ -60,7 +62,11 @@ public class Main {
             method.invoke(sysLoader, url);
 
             Class<?> main = ClassLoader.getSystemClassLoader().loadClass("com.github.mjjaniec.time.core.Main");
-            String[] arguments = new String[0];
+
+            String[] arguments = updated.map(release -> new String[]{
+                    release.version().toString(),
+                    release.getBody()
+            }).orElse(new String[0]);
             main.getMethod("main", String[].class).invoke(null, (Object) arguments);
 
         } catch (Exception e) {

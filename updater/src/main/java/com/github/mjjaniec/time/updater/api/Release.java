@@ -7,6 +7,7 @@ import java.util.List;
 public class Release {
     private String tag_name;
     private List<Asset> assets;
+    private String body;
 
     public String getTag_name() {
         return tag_name;
@@ -26,5 +27,13 @@ public class Release {
 
     public Version version() {
         return new Version(tag_name);
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
     }
 }
