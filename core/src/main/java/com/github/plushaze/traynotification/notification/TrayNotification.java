@@ -22,6 +22,7 @@ import com.github.plushaze.traynotification.models.CustomStage;
 import java.io.IOException;
 import java.net.URL;
 
+@SuppressWarnings("WeakerAccess")
 public final class TrayNotification {
 
 	@FXML
@@ -115,9 +116,11 @@ public final class TrayNotification {
 		notification = nType;
 
 		URL imageLocation = getClass().getClassLoader().getResource(nType.getURLResource());
-		setRectangleFill(Paint.valueOf(nType.getPaintHex()));
-		setImage(new Image(imageLocation.toString()));
-		setTrayIcon(imageIcon.getImage());
+		if (imageLocation != null) {
+			setRectangleFill(Paint.valueOf(nType.getPaintHex()));
+			setImage(new Image(imageLocation.toString()));
+			setTrayIcon(imageIcon.getImage());
+		}
 	}
 
 	public Notification getNotification() {
@@ -138,6 +141,7 @@ public final class TrayNotification {
 		setAnimation(animation);
 	}
 
+	@SuppressWarnings("WeakerAccess")
 	public boolean isTrayShowing() {
 		return animation.isShowing();
 	}

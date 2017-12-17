@@ -9,12 +9,12 @@ public abstract class AbstractAnimation implements Animation {
 
 	protected final CustomStage stage;
 
-	protected final Timeline showAnimation, dismissAnimation;
-	protected final SequentialTransition sq;
+	private final Timeline showAnimation, dismissAnimation;
+	private final SequentialTransition sq;
 
-	protected volatile boolean trayIsShowing;
+	volatile boolean trayIsShowing;
 
-	protected AbstractAnimation(CustomStage stage) {
+	AbstractAnimation(CustomStage stage) {
 		this.stage = stage;
 
 		showAnimation = setupShowAnimation();

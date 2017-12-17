@@ -1,10 +1,20 @@
 name := "time"
 
-version := "0.1"
+version := "0.2"
 
 scalaVersion := "2.12.4"
 
-mainClass in Compile := Some("com.github.mjjaniec.time.Main")
+lazy val core = project.settings(
+  assemblyJarName in assembly := "core.jar"
+)
 
+lazy val updater = project.settings(
+  libraryDependencies += "com.squareup.retrofit2" % "retrofit" % "2.3.0",
+  libraryDependencies += "com.squareup.retrofit2" % "converter-gson" % "2.3.0",
+  autoScalaLibrary := false,
+  mainClass in Compile := Some("com.github.mjjaniec.time.updater.Main"),
+  assemblyJarName in assembly := "updater.jar"
+)
 
-        
+lazy val root = project.in(file("."))
+  .aggregate(core, updater)

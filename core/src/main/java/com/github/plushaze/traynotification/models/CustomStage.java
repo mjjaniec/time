@@ -27,7 +27,7 @@ public class CustomStage extends Stage {
 		return bottomRight;
 	}
 
-	public void setSize(double width, double height) {
+	private void setSize(double width, double height) {
 		setWidth(width);
 		setHeight(height);
 	}
