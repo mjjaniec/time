@@ -23,4 +23,4 @@ lazy val runner = project.settings(
 )
 
 lazy val root = project.in(file("."))
-  .aggregate(core, updater)
+  .aggregate(core, updater, runner)
