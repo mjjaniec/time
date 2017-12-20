@@ -4,9 +4,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,7 +23,7 @@ public class Main {
             Path current = Paths.get("updater.jar");
 
             if (pending.toFile().exists()) {
-                Files.copy(pending, current);
+                Files.copy(pending, current, StandardCopyOption.REPLACE_EXISTING);
                 Files.delete(pending);
             }
 
