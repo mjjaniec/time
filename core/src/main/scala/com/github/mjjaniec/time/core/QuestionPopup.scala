@@ -9,7 +9,7 @@ import com.github.plushaze.traynotification.notification.{Notifications, TrayNot
 
 class QuestionPopup(onYes: () => Unit) {
 
-  private val notification = new TrayNotification("Czy jesteś w pracy updated :D", "", Notifications.QUESTION)
+  private val notification = new TrayNotification("Czy jesteś w pracy updated 2", "", Notifications.QUESTION)
 
   {
     val nope = new Button("Nie")

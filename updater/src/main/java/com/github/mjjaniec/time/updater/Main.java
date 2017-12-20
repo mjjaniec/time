@@ -24,6 +24,7 @@ public class Main {
 
     public static void main(String... args) throws IOException {
         setupLogging();
+        LOGGER.severe("updated - updater");
 
         LocalVersionFacade local = new LocalVersionFacade();
         GithubApiFacade github = new GithubApiFacade();
