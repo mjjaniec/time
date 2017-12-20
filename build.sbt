@@ -16,5 +16,11 @@ lazy val updater = project.settings(
   assemblyJarName in assembly := "updater.jar"
 )
 
+lazy val runner = project.settings(
+  autoScalaLibrary := false,
+  mainClass in Compile := Some("com.githu.mjjaniec.time.runner.Main"),
+  assemblyJarName in assembly := "runner.jar"
+)
+
 lazy val root = project.in(file("."))
   .aggregate(core, updater)
