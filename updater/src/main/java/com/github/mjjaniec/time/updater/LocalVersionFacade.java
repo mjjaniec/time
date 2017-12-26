@@ -1,5 +1,7 @@
 package com.github.mjjaniec.time.updater;
 
+import com.github.mjjaniec.time.loader.Loggers;
+
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.Optional;
@@ -8,8 +10,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class LocalVersionFacade {
-    private static final Logger LOGGER = Logger.getLogger(LocalVersionFacade.class.getName());
-    private static final String CurrentRelease = "CurrentRelease.v";
+    private static final Logger LOGGER = Loggers.get(LocalVersionFacade.class);
+    private static final String CurrentRelease = "release.ver";
 
     public Optional<Version> currentRelease() {
         try (Scanner scanner = new Scanner(new FileReader(CurrentRelease))) {

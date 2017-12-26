@@ -1,16 +1,16 @@
 package com.github.mjjaniec.time.updater;
 
+import com.github.mjjaniec.time.loader.Loggers;
+import com.github.mjjaniec.time.loader.Runner;
 import com.github.mjjaniec.time.updater.api.Asset;
 import com.github.mjjaniec.time.updater.api.Release;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.FileHandler;
@@ -22,10 +22,9 @@ public class Main {
     private static final String CoreJar = "core.jar";
     private static final String UpdaterJar = "updater.jar";
 
-    private static Logger LOGGER = Logger.getLogger(Main.class.getName());
+    private static Logger LOGGER = Loggers.get(Main.class);
 
-    public static void main(String... args) throws IOException {
-        setupLogging();
+    public static void main(String... args) {
 
         LocalVersionFacade local = new LocalVersionFacade();
         GithubApiFacade github = new GithubApiFacade();
@@ -39,13 +38,6 @@ public class Main {
 
 
         startApplication(updated);
-    }
-
-    private static void setupLogging() throws IOException {
-        FileHandler fh = new FileHandler("updater.log");
-        SimpleFormatter formatter = new SimpleFormatter();
-        fh.setFormatter(formatter);
-        Logger.getLogger("").addHandler(fh);
     }
 
     private static Optional<Release> update(Release release, LocalVersionFacade local) {
@@ -85,27 +77,11 @@ public class Main {
 
     private static void startApplication(Optional<Release> updated) {
         try {
-            File myJar = new File(CoreJar);
-
-            URL url = myJar.toURI().toURL();
-
-            Class[] parameters = new Class[]{URL.class};
-
-            URLClassLoader sysLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
-            Class<URLClassLoader> sysClass = URLClassLoader.class;
-
-            Method method = sysClass.getDeclaredMethod("addURL", parameters);
-            method.setAccessible(true);
-            method.invoke(sysLoader, url);
-
-            Class<?> main = ClassLoader.getSystemClassLoader().loadClass("com.github.mjjaniec.time.core.Main");
-
             String[] arguments = updated.map(release -> new String[]{
                     release.version().toString(),
                     release.getBody()
             }).orElse(new String[0]);
-            main.getMethod("main", String[].class).invoke(null, (Object) arguments);
-
+            Runner.loadJar(Paths.get(CoreJar), arguments);
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Start failed", e);
         }

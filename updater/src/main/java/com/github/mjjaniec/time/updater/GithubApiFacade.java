@@ -1,5 +1,6 @@
 package com.github.mjjaniec.time.updater;
 
+import com.github.mjjaniec.time.loader.Loggers;
 import com.github.mjjaniec.time.updater.api.GithubApi;
 import com.github.mjjaniec.time.updater.api.Release;
 import retrofit2.Call;
@@ -13,12 +14,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class GithubApiFacade {
-    private static final Logger LOGGER = Logger.getLogger(GithubApiFacade.class.getName());
+    private static final Logger LOGGER = Loggers.get(GithubApiFacade.class);
 
     private GithubApi api = new Retrofit.Builder()
             .baseUrl("https://api.github.com/")
             .addConverterFactory(GsonConverterFactory
-                   .create())
+                    .create())
             .build().create(GithubApi.class);
 
     public Optional<Release> latest() {

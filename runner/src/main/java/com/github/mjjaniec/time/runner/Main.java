@@ -1,9 +1,9 @@
 package com.github.mjjaniec.time.runner;
 
+import com.github.mjjaniec.time.loader.Loggers;
+import com.github.mjjaniec.time.loader.Runner;
+
 import java.io.IOException;
-import java.lang.reflect.Method;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.nio.file.*;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
@@ -11,31 +11,24 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 public class Main {
-    public static void main(String... args) throws IOException {
-        FileHandler fh = new FileHandler("runner.log");
-        SimpleFormatter formatter = new SimpleFormatter();
-        fh.setFormatter(formatter);
-        Logger logger = Logger.getLogger("Runner");
-        logger.addHandler(fh);
+    public static void main(String... args) {
+        Logger logger = Loggers.get(Main.class);
 
         try {
             Path pending = Paths.get("updater.jar.pending");
             Path current = Paths.get("updater.jar");
 
             if (pending.toFile().exists()) {
+                logger.info("Replaced updater.jar with updater.jar.pending and delete pending file...");
                 Files.copy(pending, current, StandardCopyOption.REPLACE_EXISTING);
                 Files.delete(pending);
+                logger.info("done!");
+            } else {
+                logger.info("No pending updater.");
             }
-
-            URLClassLoader sysLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
-
-            Method method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
-            method.setAccessible(true);
-            method.invoke(sysLoader, current.toUri().toURL());
-
-            Class<?> main = sysLoader.loadClass("com.github.mjjaniec.time.updater.Main");
-            String[] mainParameters = new String[0];
-            main.getMethod("main", String[].class).invoke(null, (Object) mainParameters);
+            logger.info("Starting updater.jar...");
+            Runner.loadJar(current);
+            logger.info("Updater started. Exiting.");
         } catch (Exception e) {
             logger.log(Level.SEVERE, "", e);
         }

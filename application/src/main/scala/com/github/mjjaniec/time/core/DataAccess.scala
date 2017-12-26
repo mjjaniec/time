@@ -10,7 +10,7 @@ import scala.util.control.NonFatal
 case class Data(day: LocalDate, started: LocalTime, worked: Duration, toWork: Duration)
 
 object DataAccess {
-  private val filename = "com.github.mjjaniec.time.db"
+  private val filename = "time.db"
 
   def store(data: Data): Unit = {
 
