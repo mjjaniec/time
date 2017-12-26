@@ -6,17 +6,14 @@ import com.github.mjjaniec.time.updater.api.Asset;
 import com.github.mjjaniec.time.updater.api.Release;
 
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 public class Main {
     private static final String CoreJar = "core.jar";
