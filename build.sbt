@@ -5,7 +5,7 @@ version := "0.3.0"
 scalaVersion := "2.12.4"
 
 lazy val application = project.settings(
-  assemblyJarName in assembly := "core.jar"
+  assemblyJarName in assembly := "application.jar"
 )
 
 lazy val commons = project.settings(

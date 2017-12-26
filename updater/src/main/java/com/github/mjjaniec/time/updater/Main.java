@@ -16,7 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Main {
-    private static final String CoreJar = "core.jar";
+    private static final String ApplicationJar = "application.jar";
     private static final String UpdaterJar = "updater.jar";
 
     private static Logger LOGGER = Loggers.get(Main.class);
@@ -46,7 +46,7 @@ public class Main {
             }
             updaterAsset.ifPresent(asset -> downloadAsset(asset, asset.getName() + ".pending"));
 
-            Optional<Asset> coreAsset = assets.stream().filter(a -> CoreJar.equals(a.getName())).findFirst();
+            Optional<Asset> coreAsset = assets.stream().filter(a -> ApplicationJar.equals(a.getName())).findFirst();
             if (!coreAsset.isPresent()) {
                 LOGGER.warning("No core asset in the release " + release.version().toString() + ". Update failed!");
             }
@@ -78,7 +78,7 @@ public class Main {
                     release.version().toString(),
                     release.getBody()
             }).orElse(new String[0]);
-            Runner.loadJar(Paths.get(CoreJar), arguments);
+            Runner.loadJar(Paths.get(ApplicationJar), arguments);
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Start failed", e);
         }
