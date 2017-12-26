@@ -2,7 +2,7 @@ package com.github.mjjaniec.time
 
 import java.time.Duration
 
-package object core {
+package object application {
 
   implicit class DurationEx(val self: Duration) extends AnyVal {
     def isShorter(other: Duration): Boolean = self.minus(other).isNegative

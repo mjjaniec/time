@@ -1,4 +1,4 @@
-package com.github.mjjaniec.time.core
+package com.github.mjjaniec.time.application
 
 import javafx.application.{Application, Platform}
 import javafx.stage.Stage

@@ -4,8 +4,11 @@ version := "0.3.1"
 
 scalaVersion := "2.12.4"
 
+lazy val jars = taskKey[Unit]("Copy jars from modules folders to 'app'")
+
 lazy val application = project.settings(
-  assemblyJarName in assembly := "application.jar"
+  assemblyJarName in assembly := "application.jar",
+  assemblyOutputPath in assembly := baseDirectory.value / "../jar/application.jar"
 )
 
 lazy val commons = project.settings(
@@ -17,13 +20,13 @@ lazy val updater = project.dependsOn(commons).settings(
   libraryDependencies += "com.squareup.retrofit2" % "converter-gson" % "2.3.0",
   autoScalaLibrary := false,
   mainClass in Compile := Some("com.github.mjjaniec.time.updater.Main"),
-  assemblyJarName in assembly := "updater.jar"
+  assemblyOutputPath in assembly := baseDirectory.value / "../jar/updater.jar"
 )
 
 lazy val runner = project.dependsOn(commons).settings(
   autoScalaLibrary := false,
   mainClass in Compile := Some("com.github.mjjaniec.time.runner.Main"),
-  assemblyJarName in assembly := "runner.jar"
+  assemblyOutputPath in assembly := baseDirectory.value / "../jar/runner.jar"
 )
 
 

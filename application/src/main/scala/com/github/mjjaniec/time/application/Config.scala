@@ -1,4 +1,4 @@
-package com.github.mjjaniec.time.core
+package com.github.mjjaniec.time.application
 
 import java.time.Duration
 

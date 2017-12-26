@@ -1,4 +1,4 @@
-package com.github.mjjaniec.time.core
+package com.github.mjjaniec.time.application
 
 import java.io._
 import java.time.{Duration, LocalDate, LocalTime}
