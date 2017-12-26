@@ -13,13 +13,18 @@ import java.util.logging.SimpleFormatter;
 public class Main {
     public static void main(String... args) {
         Logger logger = Loggers.get(Main.class);
+        logger.info("Debug info:\n" +
+                "  java.version: " + System.getProperty("java.version") + "\n" +
+                "  java.home: " + System.getProperty("java.home") + "\n" +
+                "  os.name: " + System.getProperty("os.name") + "\n" +
+                "  user.dir: " + System.getProperty("user.dir"));
 
         try {
             Path pending = Paths.get("updater.jar.pending");
             Path current = Paths.get("updater.jar");
 
             if (pending.toFile().exists()) {
-                logger.info("Replaced updater.jar with updater.jar.pending and delete pending file...");
+                logger.info("Replace updater.jar with updater.jar.pending and delete .pending file...");
                 Files.copy(pending, current, StandardCopyOption.REPLACE_EXISTING);
                 Files.delete(pending);
                 logger.info("done!");
