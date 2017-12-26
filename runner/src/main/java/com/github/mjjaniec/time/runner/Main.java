@@ -1,14 +1,11 @@
 package com.github.mjjaniec.time.runner;
 
-import com.github.mjjaniec.time.loader.Loggers;
-import com.github.mjjaniec.time.loader.Runner;
+import com.github.mjjaniec.time.commons.Loggers;
+import com.github.mjjaniec.time.commons.Runner;
 
-import java.io.IOException;
 import java.nio.file.*;
-import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 public class Main {
     public static void main(String... args) {

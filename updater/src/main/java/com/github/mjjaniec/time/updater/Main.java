@@ -1,7 +1,7 @@
 package com.github.mjjaniec.time.updater;
 
-import com.github.mjjaniec.time.loader.Loggers;
-import com.github.mjjaniec.time.loader.Runner;
+import com.github.mjjaniec.time.commons.Loggers;
+import com.github.mjjaniec.time.commons.Runner;
 import com.github.mjjaniec.time.updater.api.Asset;
 import com.github.mjjaniec.time.updater.api.Release;
 

@@ -1,6 +1,6 @@
 package com.github.mjjaniec.time.updater;
 
-import com.github.mjjaniec.time.loader.Loggers;
+import com.github.mjjaniec.time.commons.Loggers;
 
 import java.io.FileReader;
 import java.io.FileWriter;

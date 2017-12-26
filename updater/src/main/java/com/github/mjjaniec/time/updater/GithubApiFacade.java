@@ -1,6 +1,6 @@
 package com.github.mjjaniec.time.updater;
 
-import com.github.mjjaniec.time.loader.Loggers;
+import com.github.mjjaniec.time.commons.Loggers;
 import com.github.mjjaniec.time.updater.api.GithubApi;
 import com.github.mjjaniec.time.updater.api.Release;
 import retrofit2.Call;
