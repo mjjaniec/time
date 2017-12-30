@@ -2,31 +2,36 @@ package com.github.mjjaniec.time.application.tray
 
 import java.awt.event.{MouseEvent, MouseListener}
 import java.awt.image.BufferedImage
-import java.awt.{Color, Image, SystemTray, TrayIcon}
+import java.awt._
 
-import com.github.mjjaniec.time.application.{Daemon, DataAccess}
 
-class AppTrayIcon(private var progress: Double) {
-
-  private val tray = SystemTray.getSystemTray
-  private val pixelSize = tray.getTrayIconSize
-
-  private var pixelProgress: Int = -1
-  private var trayIcon: TrayIcon = _
+class AppTrayIcon(popupMenu: PopupMenu, onClick: () => Unit) {
 
   {
     // ensure awt toolkit is initialized.
     java.awt.Toolkit.getDefaultToolkit
-    update(progress)
   }
 
-  def update(progress: Double): Unit = {
+  private val pixelSize = SystemTray.getSystemTray.getTrayIconSize
+  private val trayIcon = new TrayIcon(drawTrayIconIcon())
+
+  private var pixelProgress: Int = -1
+  private var progress: Double = 0
+
+  {
+    trayIcon.addMouseListener(new AppTrayIcon.TrayIconClickListener(onClick))
+    trayIcon.setPopupMenu(popupMenu)
+    SystemTray.getSystemTray.add(trayIcon)
+  }
+
+  def update(progress: Double, tooltip: String): Unit = {
     this.progress = progress
+    trayIcon.setToolTip(tooltip)
 
     val newPixelProgress = ((pixelSize.height - 2) * Math.max(0, Math.min(progress, 1))).toInt
     if (newPixelProgress != pixelProgress) {
       pixelProgress = newPixelProgress
-      refreshTrayIcon()
+      trayIcon.setImage(drawTrayIconIcon())
     }
   }
 
@@ -44,31 +49,24 @@ class AppTrayIcon(private var progress: Double) {
     g.dispose()
     image
   }
+}
 
-  private def refreshTrayIcon(): Unit = {
-    if (trayIcon != null) {
-      tray.remove(trayIcon)
-    }
+object AppTrayIcon {
 
-    trayIcon = new TrayIcon(drawTrayIconIcon())
+  class TrayIconClickListener(onClick: () => Unit) extends MouseListener() {
+    override def mouseExited(e: MouseEvent): Unit = ()
 
-    // if the user double-clicks on the tray icon, show the main app stage.
-    trayIcon.addMouseListener(new MouseListener {
-      override def mouseExited(e: MouseEvent): Unit = ()
+    override def mousePressed(e: MouseEvent): Unit = ()
 
-      override def mousePressed(e: MouseEvent): Unit = ()
+    override def mouseReleased(e: MouseEvent): Unit = ()
 
-      override def mouseReleased(e: MouseEvent): Unit = ()
+    override def mouseEntered(e: MouseEvent): Unit = ()
 
-      override def mouseEntered(e: MouseEvent): Unit = ()
-
-      override def mouseClicked(e: MouseEvent): Unit = {
-        Daemon.showProgress(DataAccess.load())
+    override def mouseClicked(e: MouseEvent): Unit = {
+      if (e.getButton == MouseEvent.BUTTON1) {
+        onClick()
       }
-    })
-
-    // add the application tray icon to the system tray.
-    tray.add(trayIcon)
+    }
   }
 
 }

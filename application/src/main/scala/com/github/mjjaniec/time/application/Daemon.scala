@@ -1,13 +1,10 @@
 package com.github.mjjaniec.time.application
 
-import java.awt.event.{MouseEvent, MouseListener}
-import java.awt.image.BufferedImage
-import java.awt.{Color, Image, TrayIcon}
 import java.time._
 import java.util.{Timer, TimerTask}
 import javafx.application.Platform
 
-import com.github.mjjaniec.time.application.tray.AppTrayIcon
+import com.github.mjjaniec.time.application.tray.{AppTrayIcon, AppTrayMenu}
 import com.github.plushaze.traynotification.animations.Animations
 import com.github.plushaze.traynotification.notification.{Notifications, TrayNotification}
 
@@ -18,7 +15,7 @@ object Daemon {
   private var overtimeIteration = 1
   private var firstRun = true
 
-  private var appTrayIcon = new AppTrayIcon(0)
+  private val appTrayIcon = new AppTrayIcon(new AppTrayMenu(), () => Daemon.showProgress(DataAccess.load()))
 
   def start(): Unit = {
     val timer = new Timer()
@@ -58,16 +55,15 @@ object Daemon {
     firstRun = false
 
     val data2 = DataAccess.load()
-    appTrayIcon.update(data2.worked.getSeconds / data2.toWork.getSeconds.toDouble)
+    appTrayIcon.update(data2.worked.getSeconds / data2.toWork.getSeconds.toDouble, "this is the tooltip")
   }
-
 
 
   def showProgress(data: Data): Unit = {
     val line1 = s"Pracujesz już ${printDuration(data.worked)} (od ${data.started})."
     val now = LocalTime.now().withSecond(0).withNano(0)
     val (line2, color) = if (data.worked.isEqual(data.toWork, Config.Tolerance)) {
-       s"Masz czyste konto, możesz iść do domu." -> Notifications.SUCCESS
+      s"Masz czyste konto, możesz iść do domu." -> Notifications.SUCCESS
     } else if (data.worked.isLonger(data.toWork)) {
       s"Jesteś już ${printDuration(data.worked.minus(data.toWork))} do przodu, może już idź." -> Notifications.SUCCESS
     } else {
@@ -84,8 +80,8 @@ object Daemon {
         val toClear = data.toWork.minus(data.worked)
         val toWorkday = Config.Workday.minus(data.worked)
         //s"${now.plus(toWorkday)} - Za ${printDuration(toWorkday)} dnióweczka" +
-          s"Za ${printDuration(toClear)} (${now.plus(toClear)}) odrobisz swoje " +
-          s"${printDuration(data.toWork.minus(Config.Workday))} w dupę." ->  Notifications.INFORMATION
+        s"Za ${printDuration(toClear)} (${now.plus(toClear)}) odrobisz swoje " +
+          s"${printDuration(data.toWork.minus(Config.Workday))} w dupę." -> Notifications.INFORMATION
       }
     }
     doShowNotification("Status", line1 + "\n" + line2, color)
