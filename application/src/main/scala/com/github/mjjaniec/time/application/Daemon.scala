@@ -7,6 +7,7 @@ import java.time._
 import java.util.{Timer, TimerTask}
 import javafx.application.Platform
 
+import com.github.mjjaniec.time.application.tray.AppTrayIcon
 import com.github.plushaze.traynotification.animations.Animations
 import com.github.plushaze.traynotification.notification.{Notifications, TrayNotification}
 
@@ -16,7 +17,8 @@ object Daemon {
   private var clearAccountShowed = false
   private var overtimeIteration = 1
   private var firstRun = true
-  private var trayIcon: TrayIcon = _
+
+  private var appTrayIcon = new AppTrayIcon(0)
 
   def start(): Unit = {
     val timer = new Timer()
@@ -56,7 +58,7 @@ object Daemon {
     firstRun = false
 
     val data2 = DataAccess.load()
-    refreshTray(data2.worked.getSeconds / data2.toWork.getSeconds.toDouble)
+    appTrayIcon.update(data2.worked.getSeconds / data2.toWork.getSeconds.toDouble)
   }
 
 
@@ -135,7 +137,7 @@ object Daemon {
     doShowNotification("Praca na dziś", line1 + "\n" + line2, color)
   }
 
-  private def doShowNotification(title: String, content: String, color: Notifications): Unit = {
+  def doShowNotification(title: String, content: String, color: Notifications): Unit = {
     Platform.runLater { () =>
       val n = new TrayNotification(title, content, color)
       n.setAnimation(Animations.POPUP)
@@ -148,47 +150,6 @@ object Daemon {
       .substring(2)
       .replaceAll("(\\d[HMS])(?!$)", "$1 ")
       .toLowerCase()
-  }
-
-  private def refreshTray(progress: Double): Unit = {
-    // ensure awt toolkit is initialized.
-    java.awt.Toolkit.getDefaultToolkit
-
-    // set up a system tray icon.
-    val tray = java.awt.SystemTray.getSystemTray
-    val size = tray.getTrayIconSize
-
-    def drawIcon(color: Color): Image = {
-      val image = new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_RGB)
-      val g = image.getGraphics
-      val color = if (progress < 1) new Color(50, 190, 240) else new Color(50, 200, 40)
-      g.setColor(color)
-
-      val height = ((size.height - 2) * Math.max(0, Math.min(progress, 1))).toInt
-      g.drawRect(1, 1, size.width - 2, size.height - 2)
-      g.fillRect(1, size.height - 1 - height, size.width - 2, height)
-      g.dispose()
-      image
-    }
-
-    if (trayIcon != null) {
-      tray.remove(trayIcon)
-    }
-
-    trayIcon = new TrayIcon(drawIcon(Color.RED))
-
-    // if the user double-clicks on the tray icon, show the main app stage.
-    trayIcon.addMouseListener(new MouseListener {
-      override def mouseExited(e: MouseEvent): Unit = ()
-      override def mousePressed(e: MouseEvent): Unit = ()
-      override def mouseReleased(e: MouseEvent): Unit = ()
-      override def mouseEntered(e: MouseEvent): Unit = ()
-      override def mouseClicked(e: MouseEvent): Unit = Daemon.showProgress(DataAccess.load())
-    })
-
-    // add the application tray icon to the system tray.
-    tray.add(trayIcon)
-
   }
 
 }
