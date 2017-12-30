@@ -10,6 +10,7 @@ import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
@@ -28,11 +29,12 @@ public class Main {
 
         Optional<Version> currentRelease = local.currentRelease();
         Optional<Release> latestRelease = github.latest();
+        LOGGER.info("Current version: " + currentRelease.toString());
+        LOGGER.info("Latest remote version: " + latestRelease.map(Release::version).toString());
 
         Optional<Release> updated = latestRelease.
                 filter(latest -> latest.version().isNewer(currentRelease.orElse(Version.Null)))
                 .flatMap(latest -> update(latest, local));
-
 
         startApplication(updated);
     }
@@ -40,6 +42,7 @@ public class Main {
     private static Optional<Release> update(Release release, LocalVersionFacade local) {
         try {
             List<Asset> assets = release.getAssets();
+            LOGGER.info("Downloading latest release");
             Optional<Asset> updaterAsset = assets.stream().filter(a -> UpdaterJar.equals(a.getName())).findFirst();
             if (!updaterAsset.isPresent()) {
                 LOGGER.warning("No updater asset in the release " + release.version().toString() + ".");
@@ -63,12 +66,15 @@ public class Main {
 
     private static void downloadAsset(Asset asset, String targetFile) {
         try {
+            LOGGER.info("Downloading asset '" + asset.getName() + "'...");
             URL url = new URL(asset.getBrowser_download_url());
             ReadableByteChannel rbc = Channels.newChannel(url.openStream());
             FileOutputStream fos = new FileOutputStream(targetFile);
             fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+            LOGGER.info("Done." );
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Downloading of asset '" + asset.getName() + "' from URL '" +
+             asset.getBrowser_download_url() + "has failed.", e);
         }
     }
 
@@ -78,6 +84,8 @@ public class Main {
                     release.version().toString(),
                     release.getBody()
             }).orElse(new String[0]);
+            LOGGER.info("Starting application '" + ApplicationJar
+                    + "' with parameters: " + Arrays.toString(arguments));
             Runner.loadJar(Paths.get(ApplicationJar), arguments);
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Start failed", e);
