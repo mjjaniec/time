@@ -22,7 +22,7 @@ class JavaFxApplication extends Application {
   private def showUpdateNotification(version: String, changelog: String): Unit = {
     Platform.runLater(() => {
       val notification = new TrayNotification()
-      notification.setTitle("Updated to version: " + version)
+      notification.setTitle("Zaktualizowano do wersji: " + version)
       notification.setMessage(changelog)
       notification.setNotification(Notifications.SUCCESS)
       notification.setAnimation(Animations.POPUP)
@@ -33,14 +33,13 @@ class JavaFxApplication extends Application {
 
 
   private def showStartupQuestion(): Unit = {
-    val popup = new QuestionPopup(
+    new QuestionPopup(
       "Czy jesteś w pracy?",
       Vector(
         QuestionOption("Tak", () => Daemon.start()),
         QuestionOption("Nie", () => System.exit(0))
       ),
       Opt(() => System.exit(0))
-    )
-    Platform.runLater(() => popup.show())
+    ).show()
   }
 }

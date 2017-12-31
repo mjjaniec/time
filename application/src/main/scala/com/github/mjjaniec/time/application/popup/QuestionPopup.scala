@@ -4,6 +4,7 @@ package popup
 import javafx.geometry.Insets
 import javafx.scene.control.Button
 import javafx.scene.layout._
+import javafx.util.Duration
 
 import com.github.plushaze.traynotification.animations.Animations
 import com.github.plushaze.traynotification.notification.{Notifications, TrayNotification}
@@ -39,4 +40,6 @@ class QuestionPopup(question: String, options: Vector[QuestionOption], onDismiss
   }
 
   def show(): Unit = notification.showAndWait()
+
+  def showAndDismiss(dismissDelay: Duration): Unit = notification.showAndDismiss(dismissDelay)
 }
