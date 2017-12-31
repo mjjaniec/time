@@ -21,8 +21,12 @@ class AppTrayIcon(popupMenu: PopupMenu, onClick: () => Unit) {
   {
     trayIcon.addMouseListener(new AppTrayIcon.TrayIconClickListener(onClick))
     trayIcon.setPopupMenu(popupMenu)
-    SystemTray.getSystemTray.add(trayIcon)
   }
+
+  def show(): Unit = SystemTray.getSystemTray.add(trayIcon)
+
+  def hide(): Unit = SystemTray.getSystemTray.remove(trayIcon)
+
 
   def update(progress: Double, tooltip: String): Unit = {
     this.progress = progress

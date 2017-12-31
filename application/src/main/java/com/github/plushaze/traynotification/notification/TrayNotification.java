@@ -156,10 +156,8 @@ public final class TrayNotification {
 			stage.show();
 
 			onShown();
-			animation.playSequential(dismissDelay);
+			animation.playDismissDelayed(dismissDelay, this::onDismissed);
 		} else dismiss();
-
-		onDismissed();
 	}
 
 	/**

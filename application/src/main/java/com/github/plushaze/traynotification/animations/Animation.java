@@ -9,8 +9,9 @@ public interface Animation {
 	 * Plays both the show and dismiss animation using a sequential transition object
 	 *
 	 * @param dismissDelay Amount of delay before starting the dismiss animation
+	 * @param whenFinished action to be fired when animation is finished
 	 */
-	void playSequential(Duration dismissDelay);
+	void playDismissDelayed(Duration dismissDelay, Runnable whenFinished);
 
 	/**
 	 * Plays the implemented show animation

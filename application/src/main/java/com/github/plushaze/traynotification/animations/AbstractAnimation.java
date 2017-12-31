@@ -3,6 +3,8 @@ package com.github.plushaze.traynotification.animations;
 import com.github.plushaze.traynotification.models.CustomStage;
 import javafx.animation.SequentialTransition;
 import javafx.animation.Timeline;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.util.Duration;
 
 public abstract class AbstractAnimation implements Animation {
@@ -33,9 +35,14 @@ public abstract class AbstractAnimation implements Animation {
 	}
 
 	@Override
-	public final void playSequential(Duration dismissDelay) {
+	public final void playDismissDelayed(Duration dismissDelay, Runnable whenFinished) {
 		sq.getChildren().get(1).setDelay(dismissDelay);
 		sq.play();
+		EventHandler<ActionEvent> oneShotHandler = event -> {
+            whenFinished.run();
+            sq.setOnFinished(e -> { });
+        };
+		sq.setOnFinished(oneShotHandler);
 	}
 
 	@Override

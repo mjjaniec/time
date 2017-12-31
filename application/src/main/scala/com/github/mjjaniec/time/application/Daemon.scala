@@ -17,12 +17,20 @@ object Daemon {
 
   private val appTrayIcon = new AppTrayIcon(new AppTrayMenu(), () => Daemon.showProgress(DataAccess.load()))
 
+  
+
   def start(): Unit = {
     val timer = new Timer()
 
     timer.schedule(new TimerTask {
       override def run(): Unit = job()
     }, 0, 60 * 1000)
+
+    appTrayIcon.show()
+  }
+
+  def stop(): Unit = {
+    appTrayIcon.hide()
   }
 
   private def job(): Unit = {
