@@ -11,7 +11,16 @@ class AppTrayMenu extends PopupMenu {
 
   {
     add(new MenuItem("Status pracy").setup(_.setAction(() => Daemon.showProgress(DataAccess.load()))))
-    add(new MenuItem("Dostosuj czas pracy").setup(_.setAction(() => new AdjustOvertimeView().show())))
+    add(new MenuItem("Dostosuj czas pracy").setup(_.setAction(() =>
+      new AdjustOvertimeView(
+        Config.Workday minus DataAccess.load().toWork,
+        duration => {
+          val current = DataAccess.load()
+          val updated = current.copy(toWork = Config.Workday minus duration)
+          DataAccess.store(updated)
+          Daemon.showProgress(updated)
+        }
+      ).show())))
     addSeparator()
     add(new MenuItem("Wyjście").setup(_.setAction(onExit)))
   }

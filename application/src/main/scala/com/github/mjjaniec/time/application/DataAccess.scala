@@ -13,12 +13,11 @@ object DataAccess {
   private val filename = "time.db"
 
   def store(data: Data): Unit = {
-
     val writer = new FileWriter(DataAccess.filename)
     writer.write(s"day: ${data.day.toString}\n")
     writer.write(s"started: ${data.started.toString}\n")
-    writer.write(s"worked: ${data.worked.getSeconds / 60}m\n")
-    writer.write(s"to_work: ${data.toWork.getSeconds / 60}m\n")
+    writer.write(s"worked: ${data.worked.toMinutes}m\n")
+    writer.write(s"to_work: ${data.toWork.toMinutes}m\n")
     writer.flush()
     writer.close()
   }
@@ -54,8 +53,6 @@ object DataAccess {
       } finally {
         scanner.close()
       }
-
-
     } else {
       default
     }

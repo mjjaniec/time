@@ -1,11 +1,10 @@
 package com.github.mjjaniec.time.application
 package popup
 
-import javafx.geometry.Insets
 import javafx.scene.control.Button
-import javafx.scene.layout._
 import javafx.util.Duration
 
+import com.github.mjjaniec.time.application.util.GUI
 import com.github.plushaze.traynotification.animations.Animations
 import com.github.plushaze.traynotification.notification.{Notifications, TrayNotification}
 
@@ -27,15 +26,13 @@ class QuestionPopup(question: String, options: Vector[QuestionOption], onDismiss
       })
       b.setStyle("-fx-background-radius:0;")
       b
-    }.asJava
+    }
 
     onDismiss.foreach(action => notification.setOnDismiss(_ => action()))
 
-    val buttonsLayout = new HBox(12)
-    buttonsLayout.setPadding(new Insets(8, 0, 0, 0))
-    buttonsLayout.getChildren.addAll(buttons)
+    GUI.create.hBox.spacing.padded(top = true, right = false, bottom = false, left = false)
+      .addChildren(buttons).get |> notification.setCustomContent
 
-    notification.setCustomContent(buttonsLayout)
     notification.setAnimation(Animations.POPUP)
   }
 
