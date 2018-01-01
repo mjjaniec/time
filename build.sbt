@@ -4,6 +4,8 @@ version := "0.4.0"
 
 scalaVersion := "2.12.4"
 
+scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature", "-Xfatal-warnings")
+
 lazy val jars = taskKey[Unit]("Copy jars from modules folders to 'app'")
 
 lazy val application = project.settings(

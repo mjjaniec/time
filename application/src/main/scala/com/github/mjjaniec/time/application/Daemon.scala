@@ -86,7 +86,7 @@ object Daemon {
           s"za ${printDuration(toWorkday)} (${now.plus(toWorkday)}) dnióweczka." -> Notifications.INFORMATION
       } else {
         val toClear = data.toWork.minus(data.worked)
-        val toWorkday = Config.Workday.minus(data.worked)
+        //val toWorkday = Config.Workday.minus(data.worked)
         //s"${now.plus(toWorkday)} - Za ${printDuration(toWorkday)} dnióweczka" +
         s"Za ${printDuration(toClear)} (${now.plus(toClear)}) odrobisz swoje " +
           s"${printDuration(data.toWork.minus(Config.Workday))} w dupę." -> Notifications.INFORMATION

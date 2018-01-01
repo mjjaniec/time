@@ -4,8 +4,6 @@ import java.io._
 import java.time.{Duration, LocalDate, LocalTime}
 import java.util.Scanner
 
-import scala.util.control.NonFatal
-
 
 case class Data(day: LocalDate, started: LocalTime, worked: Duration, toWork: Duration)
 
