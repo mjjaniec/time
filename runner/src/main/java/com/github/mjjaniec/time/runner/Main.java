@@ -14,6 +14,7 @@ public class Main {
                 "  java.version: " + System.getProperty("java.version") + "\n" +
                 "  java.home: " + System.getProperty("java.home") + "\n" +
                 "  os.name: " + System.getProperty("os.name") + "\n" +
+                "  file.encoding: " + System.getProperty("file.encoding") + "\n" +
                 "  user.dir: " + System.getProperty("user.dir"));
 
         try {

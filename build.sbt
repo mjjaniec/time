@@ -1,6 +1,6 @@
 name := "time"
 
-version := "0.4.0"
+version := "0.4.1"
 
 scalaVersion := "2.12.4"
 
@@ -8,15 +8,15 @@ scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature", "-Xfatal-warning
 
 lazy val jars = taskKey[Unit]("Copy jars from modules folders to 'app'")
 
-lazy val application = project.settings(
+lazy val commons = project.settings(
+  autoScalaLibrary := false
+)
+
+lazy val application = project.dependsOn(commons).settings(
   libraryDependencies += "com.avsystem.commons" %% "commons-core" % "1.25.5",
 
   assemblyJarName in assembly := "application.jar",
   assemblyOutputPath in assembly := baseDirectory.value / "../jar/application.jar"
-)
-
-lazy val commons = project.settings(
-  autoScalaLibrary := false
 )
 
 lazy val updater = project.dependsOn(commons).settings(

@@ -17,11 +17,12 @@ public class Runner {
         }
         String javaHome = System.getProperty("java.home");
         String javaPath = Paths.get(javaHome, "bin", "java").toString();
-        String[] command = new String[arguments.length + 3];
+        String[] command = new String[arguments.length + 4];
         command[0] = javaPath;
-        command[1] = "-jar";
-        command[2] = jarPath.toAbsolutePath().toString();
-        System.arraycopy(arguments, 0, command, 3, arguments.length);
+        command[1] = "-Dfile.encoding=UTF-8";
+        command[2] = "-jar";
+        command[3] = jarPath.toAbsolutePath().toString();
+        System.arraycopy(arguments, 0, command, 4, arguments.length);
 
         new ProcessBuilder().command(command).inheritIO().start();
     }
