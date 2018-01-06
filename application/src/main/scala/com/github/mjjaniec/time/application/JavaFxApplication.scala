@@ -9,15 +9,18 @@ import com.github.plushaze.traynotification.notification.{Notifications, TrayNot
 
 class JavaFxApplication extends Application {
 
+  private val applicationContext = ApplicationConfig.createContext
+  private val daemon = new Daemon(applicationContext)
+
   override def start(primaryStage: Stage): Unit = {
     getParameters.getUnnamed.size() match {
       case 0 => showStartupQuestion()
-      case 1 => Daemon.start()
+      case 1 => daemon.start()
       case 2 => showUpdateNotification(getParameters.getUnnamed.get(0), getParameters.getUnnamed.get(1))
     }
   }
 
-  override def stop(): Unit = Daemon.stop()
+  override def stop(): Unit = daemon.stop()
 
   private def showUpdateNotification(version: String, changelog: String): Unit = {
     Platform.runLater(() => {
@@ -36,7 +39,7 @@ class JavaFxApplication extends Application {
     new QuestionPopup(
       "Czy jesteś w pracy?",
       Vector(
-        QuestionOption("Tak", () => Daemon.start()),
+        QuestionOption("Tak", () => daemon.start()),
         QuestionOption("Nie", () => System.exit(0))
       ),
       Opt(() => System.exit(0))

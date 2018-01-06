@@ -1,17 +1,16 @@
-package com.github.mjjaniec.time.application
+package com.github.mjjaniec.time.application.persistance
 
 import java.io._
 import java.time.{Duration, LocalDate, LocalTime}
 import java.util.Scanner
 
+import scala.util.control.NonFatal
 
-case class Data(day: LocalDate, started: LocalTime, worked: Duration, toWork: Duration)
 
-object DataAccess {
-  private val filename = "time.db"
+class WorkTimeDao(filename: String) {
 
-  def store(data: Data): Unit = {
-    val writer = new FileWriter(DataAccess.filename)
+  def store(data: WorkTimeData): Unit = {
+    val writer = new FileWriter(filename)
     writer.write(s"day: ${data.day.toString}\n")
     writer.write(s"started: ${data.started.toString}\n")
     writer.write(s"worked: ${data.worked.toMinutes}m\n")
@@ -20,8 +19,8 @@ object DataAccess {
     writer.close()
   }
 
-  def load(): Data = {
-    val f = new File(DataAccess.filename)
+  def load(): WorkTimeData = {
+    val f = new File(filename)
     if (f.exists()) {
       val scanner = new Scanner(new FileReader(f))
       val dayPattern = "day: (\\d+)-(\\d+)-(\\d+)".r
@@ -45,7 +44,7 @@ object DataAccess {
         val toWork = line4 match {
           case toWorkPattern(minutes) => Duration.ofMinutes(minutes.toInt)
         }
-        Data(day, time, worked, toWork)
+        WorkTimeData(day, time, worked, toWork)
       } catch {
         case NonFatal(_) => default
       } finally {
@@ -56,5 +55,5 @@ object DataAccess {
     }
   }
 
-  private def default: Data = Data(LocalDate.MIN, LocalTime.MIN, Duration.ZERO, Duration.ZERO)
+  private def default: WorkTimeData = WorkTimeData(LocalDate.MIN, LocalTime.MIN, Duration.ZERO, Duration.ZERO)
 }
